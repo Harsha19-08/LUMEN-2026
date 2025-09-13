@@ -1,5 +1,8 @@
 package com.lumen.subscription.service;
 
+import org.springframework.stereotype.Component;
+
+//@Component
 public class SnowflakeIdGenerator {
 
     private final long nodeId;
