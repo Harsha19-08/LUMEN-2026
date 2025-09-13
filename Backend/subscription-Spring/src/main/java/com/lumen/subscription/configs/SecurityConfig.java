@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/users/**").hasAnyRole()
+                        .requestMatchers("/users/**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/plans/create-plan","/plans/update-plan/**", "/plans/delete-plan/**").hasRole("ADMIN")
                         // change to hasRole("ADMIN") when ready
                         .anyRequest().authenticated()
