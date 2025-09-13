@@ -1,6 +1,8 @@
 package com.lumen.subscription.controllers;
 
+import com.lumen.subscription.entity.SubscribeRequest;
 import com.lumen.subscription.entity.Subscription;
+import com.lumen.subscription.entity.UpdateSubscriptionRequest;
 import com.lumen.subscription.service.SubscriptionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,22 +20,29 @@ public class SubscriptionController {
 
     // Subscribe
     @PostMapping("/new")
-    public ResponseEntity<Subscription> subscribe(@RequestParam Long userId,
-                                                  @RequestParam Long planId,
-                                                  @RequestParam(defaultValue = "true") boolean autoRenew,
-                                                  @RequestParam(defaultValue = "false") boolean trial) {
-        int daysValid = trial ? 7 : 30; // trial = 7 days, normal = 30 days
-//        Long plan = Long.parseLong(planId);
-        return ResponseEntity.ok(subscriptionService.subscribe(userId, planId, autoRenew, trial, daysValid));
+    public ResponseEntity<Subscription> subscribe(@RequestBody SubscribeRequest request) {
+        int daysValid = request.isTrial() ? 7 : 30;
+        Subscription subscription = subscriptionService.subscribe(
+                request.getUserId(),
+                request.getPlanId(),
+                request.isAutoRenew(),
+                request.isTrial(),
+                daysValid
+        );
+        return ResponseEntity.ok(subscription);
     }
 
     // Upgrade/Downgrade/Cancel/Renew
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Subscription> updateSubscription(@PathVariable Long id,
-                                                           @RequestParam(required = false) String planId,
-                                                           @RequestParam(defaultValue = "true") boolean autoRenew,
-                                                           @RequestParam(defaultValue = "false") boolean cancel) {
-        return ResponseEntity.ok(subscriptionService.updateSubscription(id, planId, autoRenew, cancel));
+                                                           @RequestBody UpdateSubscriptionRequest request) {
+        Subscription subscription = subscriptionService.updateSubscription(
+                id,
+                request.getPlanId(),
+                request.isAutoRenew(),
+                request.isCancel()
+        );
+        return ResponseEntity.ok(subscription);
     }
 
     // Get user subscriptions (status/history)

@@ -36,7 +36,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/users/**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/plans/create-plan","/plans/update-plan/**", "/plans/delete-plan/**").hasRole("ADMIN")
-                        .requestMatchers("/subscriptions/**").hasRole("USER")
+//                        .requestMatchers("/subscriptions/**").hasRole("USER")
                         // change to hasRole("ADMIN") when ready
                         .anyRequest().permitAll()
                 )
